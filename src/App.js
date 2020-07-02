@@ -1,36 +1,26 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import Login from './componentes/login';
-import Chef from './componentes/chef';
-import Mesero from './componentes/mesero';
-import Pedidos from './componentes/pedidos';
-import Registro from './componentes/registro';
 
+import Formulario from './components/Formulario';
+
+/* import Parrafo from './components/Parrafo'
+import Variables from './components/Variables';
+import Eventos from './components/Eventos';
+import Contador from './components/Contador';
+import Listas from './components/Listas';
+ */
 
 
 function App() {
   return (
-    <Router>
-      <div>
-      <Switch>
-        <Route path ="/pedidos"> 
-         <Pedidos />
-        </Route>
-        <Route path ="/mesero"> 
-         <Mesero />
-        </Route>
-        <Route path ="/chef"> 
-         <Chef />
-        </Route>
-        <Route path ="/registro"> 
-         <Registro />
-        </Route>
-        <Route path ="/"> 
-         <Login />
-        </Route>
-      </Switch>
-      </div>
-    </Router>
+    <div className="container mt-5" >
+      <h1>Hola mundo React</h1>
+      {/*<Parrafo/>
+      <Variables/>
+      <Eventos/>
+      <Contador/>
+      <Listas/>*/}
+      <Formulario/>
+    </div>
   );
 }
 
