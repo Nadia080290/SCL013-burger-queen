@@ -20,7 +20,7 @@
   },{
     "id": "b04",
     "name": "Jugo de frutas natural",
-    "price": 700,
+    "price": 1000,
     "count": 1,
     "type": "breakfast"
   },{
@@ -107,6 +107,30 @@
   },{
     "id": "e01",
     "name": "Queso",
+    "price": 100,
+    "count": 1,
+    "type": "additional"
+  },{
+    "id": "e02",
+    "name": "Palta",
+    "price": 1000,
+    "count": 1,
+    "type": "additional"
+  },{
+    "id": "e03",
+    "name": "Tocino",
+    "price": 100,
+    "count": 1,
+    "type": "additional"
+  },{
+    "id": "e04",
+    "name": "Champiñon",
+    "price": 100,
+    "count": 1,
+    "type": "additional"
+  },{
+    "id": "e04",
+    "name": "Aceitunas",
     "price": 100,
     "count": 1,
     "type": "additional"

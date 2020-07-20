@@ -4,7 +4,13 @@ import NavbarOrders from './NavbarOrders'
 import '../estilos/orders.css'
 import moment from "moment";
 import 'moment/locale/es';
-
+import growl from 'growl-alert';
+import 'growl-alert/dist/growl-alert.css';
+const effect =
+{
+  fadeAway: true,
+  fadeAwayTimeOut: 1000,
+}
 
 const Orders = () => {
     
@@ -12,7 +18,8 @@ const Orders = () => {
     const [delivery, setDelivery] = React.useState([]);
     
     React.useEffect(() => {
-        db.collection('pedidos').where('status', '==', 'done').onSnapshot((snap => {
+        const orderOrigin = db.collection('pedidos')
+        orderOrigin.where('status', '==', 'done').orderBy('hourDone', 'desc').onSnapshot((snap => {
             const pedidos = snap.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
@@ -38,6 +45,7 @@ const Orders = () => {
           })
           .then(() => {
             setDelivery([...delivery, { ...item, status: 'delivered', hourDelivered:   new Date().getTime() }])
+            growl.success({ text: 'Pedido Entregado', ...effect })
           })
         if (item.status === 'done') {
           const index = orderdone.findIndex((i) => i.id === item.id)
@@ -49,27 +57,27 @@ const Orders = () => {
     <Fragment>
       <NavbarOrders/>
              <section className="container">
-                <h2 className="h2">Pronto para a Entrega</h2>
+                <p className="caja">Pedidos por ser Entregados</p>
                   <div className="row row-cols-3">
-                    {orderdone.map((item) => {
+                    {orderdone.map((item, i) => {
                       return (
-                        <section className="section h5 font-italic" key={item.id}  >
+                        <section className="section h5 font-italic" key={i}  >
                           {item.status === 'done' ?
                               <div className="row waitercheck">
-                                <p className="text client-text"> Dia: {moment(item.orhourDelivered).subtract(10, 'days').calendar()}</p>
-                                <p className="text client-text"> Hora: {moment(item.orhourDelivered).format('LTS')}</p>
+                                <p className="text client-text"> Dia:  {moment(item.hourDone).format('L')}</p>
+                                <p className="text client-text"> Hora: {moment(item.hourDone).format('LT')}</p>
                                 <p className="text font-italic orders"> Cliente: {item.cliente}</p>
                                 <p className="text font-italic orders"> Mesa: {item.numMesa}</p>
                               <div className="order-itens" key={item.id}>
-                                <span className="menu-name text-light h5">Pedido</span>
-                                {item.pedido.map(item => <span className="order-kitchen" key={item.id}>
+                                <span className="menu-name h5">Pedido:</span>
+                                {item.pedido.map((item,i ) => <span className="order-kitchen" key={i}>
                                     <ul>
                                         <li> {item.countProducto} {item.nombreProducto} </li>    
                                     </ul> 
                                 </span>
                                 )}
                               </div>
-                              <button class="btn btn-dark" onClick={(e) => delivered(item, e)}>Entregado</button>
+                              <button className="btn btn-dark" onClick={(e) => delivered(item, e)}>Entregar</button>
                             </div>
 
                             : null}

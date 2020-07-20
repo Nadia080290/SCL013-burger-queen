@@ -73,11 +73,10 @@ const ResumenPedido = (props) => {
             return
         }
         growl.success({ text: 'Pedido Enviado', ...effect })
-        console.log('pedido enviado')
-         //const data = 
-         await db.collection("pedidos").add(nuevoPedido);
-         setNombre('')
-         setMesa('')
+        
+        await db.collection("pedidos").add(nuevoPedido);
+        setNombre('')
+        setMesa('')
         props.limpiarPedido()
        
       } 
@@ -118,15 +117,14 @@ const ResumenPedido = (props) => {
                                         <th scope="col mr-8 " >${item.precioProducto * item.countProducto}</th>
                                         <th scope="col"><img src={remove} className="btnDelete" id={i} onClick={deleteItem} alt=""/></th> 
                                     </tr>
-
                                     )
                                 })
                                 }
-                                <tr><th colSpan={7} className="textTotal"><p className="text">Total: ${props.resumen.reduce((acc, item) => acc + item.precioProducto * item.countProducto, 0)} </p>
+                                <tr><th colSpan={7} className="textTotal h5 "><p className="text">Total: ${props.resumen.reduce((acc, item) => acc + item.precioProducto * item.countProducto, 0)} </p>
                                 </th></tr>
                             </tbody>   
                         </table>
-                        <button className="btn btn-warning" type="submit" /* onSubmit={procesarDatos} */ onClick={agregarPedido} >Enviar</button>
+                        <button className="btn btn-warning" type="submit"  onClick={agregarPedido} >Enviar</button>
                     </div> 
             </section>
     )

@@ -14,27 +14,23 @@ const Login = (props) => {
 
     const procesarDatos = e => {
         e.preventDefault()
-        if(!email.trim() || !pass.trim()){
-            console.log('Datos vacíos email!')
+        if(!email.trim() ){
             setError('Datos vacíos email!')
             return
         }
         if(!pass.trim()){
-            console.log('Datos vacíos pass!')
             setError('Datos vacíos pass!')
             return
         }
         if(pass.length < 6){
-            console.log('6 o más carácteres')
             setError('6 o más carácteres en pass')
             return
         }
         if(!occupation.trim()){
-            console.log('Selecciona una ocupación')
             setError('Selecciona una ocupación!')
             return
         }
-        console.log('correcto...')
+
         setError(null)
         if(esLogin){
             login()
@@ -46,15 +42,12 @@ const Login = (props) => {
     const login = React.useCallback(async () => {
         try {
             const res = await auth.signInWithEmailAndPassword(email, pass)
-            console.log(res.user)
             setEmail('')
             setPass('')
             setError(null)
             setOccupation('')
             db.collection("usuarios").doc(res.user.uid).get().then((snap) =>{
-                console.log(snap.data());
                 const employeeData = snap.data();
-                console.log(employeeData);
             if (employeeData.occupation === "chef"){
                 props.history.push("/chef")
             } else {
@@ -62,7 +55,6 @@ const Login = (props) => {
             } })
             
         } catch (error) {
-            console.log(error)
             if(error.code === 'auth/invalid-email'){
                 setError('Email no válido')
             }
@@ -78,7 +70,6 @@ const Login = (props) => {
     const registrar = React.useCallback(async() => {
         try {
             const res = await auth.createUserWithEmailAndPassword(email, pass)
-            console.log(res.user)
             await db.collection('usuarios').doc(res.user.uid).set({
                 email: res.user.email,
                 uid: res.user.uid,
@@ -89,9 +80,7 @@ const Login = (props) => {
             setError(null)
             setOccupation('')
             db.collection("usuarios").doc(res.user.uid).get().then((snap) =>{
-                console.log(snap.data());
                 const employeeData = snap.data();
-                console.log(employeeData);
             if (employeeData.occupation === "chef"){
                 props.history.push("/chef")
             } else {
@@ -112,12 +101,6 @@ const Login = (props) => {
         <hr/><hr/>
         <div className="container mt-5">
             <img className="img-responsive center-block mx-auto d-block" alt="logo" src={logo}/>
-{/*             <h3 className="text-center">
-                {
-                    esRegistro ? 'Registro' : 'Login'
-                }
-            </h3>
- */}
             <div className="row justify-content-center">
                 <div className="col-12 col-sm-8 col-md-6 col-xl-4">
                     <form onSubmit={procesarDatos}>
