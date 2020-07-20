@@ -15,11 +15,11 @@ const PedidosChef = () => {
     const [orders, getOrders] = React.useState([])
     const [orderdone, setOrderDone] = React.useState([])
     const [delivery, setDelivery] = React.useState([])
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [,setDeleteOrder] = React.useState([])
+    const [isOpen, setIsOpen] = React.useState(false)
 
     React.useEffect(() => {
-        db.collection('pedidos').where('status', '==', 'pending').onSnapshot({ includeMetadataChanges: true }, (snap => {
+        const citiesRef = db.collection('pedidos');
+        citiesRef.where('status', '==', 'pending').orderBy('hourSend','desc').onSnapshot({ includeMetadataChanges: true }, (snap => {
             const pedidos = snap.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
@@ -42,28 +42,28 @@ const PedidosChef = () => {
      setIsOpen(true);
 
     };
-
-    const deleteOrder = async (id) => {
-        try {
-          await db.collection('pedidos').doc(id).delete()
-          console.log(id) 
-
-        } catch (error) {
-          console.log(error)
-        }
-    }
-
-    
     const hideModal = () => {
-      /* console.log(id)  */
       setIsOpen(false);
     };
-
+    /* const modalLoaded = () => {
+        setDeleteOrder();
+        console.log(id,'soy el id dentro del modal') 
+      };
+ */
 
     /* const deleteOrder =  => {
       db.collection("pedidos").doc(order.id).delete()
       console.log(order.id);
      }; */
+
+     const deleteOrder = async (id) => {
+        try {
+          await db.collection('pedidos').doc(id).delete()
+          console.log(id) 
+        } catch (error) {
+          console.log(error)
+        }
+    }
 
 
     const orderDone = (item) => {
@@ -80,29 +80,19 @@ const PedidosChef = () => {
         }
     }
 
-/*          deleteOrder = (item) => {
-        db.collection("pedidos").doc(item.id).delete()
-        .then(() => {
-          console.log("Document successfully deleted!");
-          hideModal()
-      }).catch((error) => {
-          console.error("Error removing document: ", error);
-      });
-    }
- */
     return (
         <Fragment>
           
         <div className="container">
-            <h2>Pedidos a realizar</h2>
+            <h2 className="font-italic">Pedidos a realizar</h2>
             <div className="row row-cols-3 ">
                 {orders.map((order) => { 
                 return (
                     <div className="h5 font-italic">
                         <section className="section" id={order.id}>
                             <div className="row columnLength">
-                            <p className="text client-text"> Dia: {moment(order.orhourDone).subtract(10, 'days').calendar()}</p>
-                                <p className="text client-text"> Hora: {moment(order.orhourDone).format('LTS')}</p>
+                            <p className="text client-text"> Dia:{moment(order.hourSend).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                                <p className="text client-text"> Hora:{moment(order.hourSend).format('LTS')}</p>
                                 <p className="text client-text orders"> Cliente: {order.cliente}</p>
                                 <p className="text client-text orders"> Mesas: {order.numMesa}</p>
                                 <span className="menu-name text text-light">Pedido</span>
@@ -112,28 +102,30 @@ const PedidosChef = () => {
                                     </ul> 
                                 </span>)} 
                                 <div className="orders footer">
-                                    <button  type="submit" className="btn btn-dark" onClick={() => showModal(order)}>Cancelar</button>
+                                    <button className="btn btn-dark" onClick={() => showModal(order.id)}>Cancelar</button>
                                     <button className="btn btn-light ok" onClick={() => orderDone(order)}>Listo</button>
                                </div>
                             </div>
                         </section>
-                        <Modal show={isOpen} onHide={hideModal}>
-                          
-                                <Modal.Body>¿ Estas seguro que quieres cancelar este pedido ?</Modal.Body>
-                                <Modal.Footer>
-                                <button class="btn btn-dark" onClick={hideModal}>Cancelar</button>
-                                <button  type="submit" class="btn btn-warning"  onClick={() => deleteOrder(order.id)}>Aceptar</button>
-                                 {console.log(order.id)}
-                          </Modal.Footer>
-                          </Modal>
-                    </div>
+                        <>
+                        <Modal  onExit={order.id} show={isOpen} onHide={hideModal} onEntered={deleteOrder}>
+                        <Modal.Header>
+                        <Modal.Title></Modal.Title>  
+                        </Modal.Header>
+                        <Modal.Body>¿ Estas seguro que quieres cancelar este pedido ?</Modal.Body>
+                        <Modal.Footer onExit={order.id}>
+                        <button onClick={hideModal}>Cancel</button>
+                        <button  type="submit" class="btn btn-warning" onClick={deleteOrder}>Aceptar</button>
+                        </Modal.Footer>
+                        </Modal>
+                        </>
+                          </div>
                 )
                 })}
             </div>
         </div>
-       
         <div className="container">
-          <h2 className="h2">Pedidos entregados</h2>
+          <h2 className="font-italic">Pedidos entregados</h2>
           <div className="row row-cols-3 ">
               {delivery.map((item, index) => {
               const send = `${new Date(item.hourSend).getHours()}h ${new Date(item.hourSend).getMinutes()}m`;

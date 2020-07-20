@@ -57,7 +57,7 @@ const ResumenPedido = (props) => {
           cliente: nombre,
           numMesa: mesa,
           status: 'pending',
-          hourSend: new Date().getTime(),
+          hourSend: new Date(),
           uid: auth.currentUser.uid
         } 
         if(!nombre.trim()){
