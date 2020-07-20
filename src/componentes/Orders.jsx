@@ -18,7 +18,8 @@ const Orders = () => {
     const [delivery, setDelivery] = React.useState([]);
     
     React.useEffect(() => {
-        db.collection('pedidos').where('status', '==', 'done').onSnapshot((snap => {
+        const orderOrigin = db.collection('pedidos')
+        orderOrigin.where('status', '==', 'done').orderBy('hourDone', 'desc').onSnapshot((snap => {
             const pedidos = snap.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
@@ -63,8 +64,8 @@ const Orders = () => {
                         <section className="section h5 font-italic" key={i}  >
                           {item.status === 'done' ?
                               <div className="row waitercheck">
-                                <p className="text client-text"> Dia:  {moment(item.orhourDelivered).format('L')}</p>
-                                <p className="text client-text"> Hora: {moment(item.orhourDelivered).format('LT')}</p>
+                                <p className="text client-text"> Dia:  {moment(item.hourDone).format('L')}</p>
+                                <p className="text client-text"> Hora: {moment(item.hourDone).format('LT')}</p>
                                 <p className="text font-italic orders"> Cliente: {item.cliente}</p>
                                 <p className="text font-italic orders"> Mesa: {item.numMesa}</p>
                               <div className="order-itens" key={item.id}>

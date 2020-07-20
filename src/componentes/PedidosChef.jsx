@@ -22,7 +22,8 @@ const PedidosChef = () => {
 
 
     React.useEffect(() => {
-        db.collection('pedidos').where('status', '==', 'pending').onSnapshot({ includeMetadataChanges: true }, (snap => {
+        const orderOrigin = db.collection('pedidos');
+        orderOrigin.where('status', '==', 'pending').orderBy('hourSend', 'desc').onSnapshot({ includeMetadataChanges: true }, (snap => {
             const pedidos = snap.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
@@ -30,7 +31,8 @@ const PedidosChef = () => {
             getOrders(pedidos);
         })
         )
-        db.collection('pedidos').where('status', '==', 'delivered').onSnapshot((snap => {
+
+        orderOrigin.where('status', '==', 'delivered').orderBy('hourDelivered', 'desc').onSnapshot((snap => {
             const pedidos = snap.docs.map((doc) => ({
               id: doc.id,
               ...doc.data()
@@ -119,8 +121,8 @@ const PedidosChef = () => {
                     <section className="section font-italic">
                         <div className="row time">
                             <div className="menu-name">
-                                <p className="text client-text "> Dia: {moment(item.orhourDone).format('L')}</p>
-                                <p className="text client-text"> Hora: {moment(item.orhourDone).format('LT')}</p>
+                                <p className="text client-text "> Dia: {moment(item.hourDelivered).format('L')}</p>
+                                <p className="text client-text"> Hora: {moment(item.hourDelivered).format('LT')}</p>
                                 <p className="card-title orders"> Cliente: {item.cliente}</p>
                                 <p className="card-title orders"> Mesa: {item.numMesa}</p>
                                 <span className="menu-name text">Pedido</span>
